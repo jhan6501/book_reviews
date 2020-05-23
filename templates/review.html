@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    You have logged in 
+{% endblock %}
+
+{% block body %}
+    
+    <h1>You have written a review!</h1>
+
+    <p> You have successfully written a review: {{ writer }} </p>
+    <p> The review is: {{review}} </p>
+    <p> it is about book: {{book_id}} </p>
+    
+{% endblock %}
