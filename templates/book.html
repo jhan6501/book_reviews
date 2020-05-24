@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{book.title}} 
+{% endblock %}
+
+{% block body %}
+    <h1>User is: {{ username }} </h1> 
+
+    <ul>
+        <li>Author: {{ book.author }}</li>
+        <li>Title: {{ book.title }}</li>
+        <li>ISBN: {{ book.isbn}} </li>
+    </ul>
+
+
+{% endblock %}

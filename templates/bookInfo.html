@@ -10,7 +10,12 @@
 
     {% for book in books  %}
         <li>
-            {{ book.title }} written by {{book.author}}
+            
+            <a href="{{ url_for('book', input= book.isbn + ',' + user) }}">
+                    {{ book.title }} written by {{book.author}}
+            </a>
+            
+            
         </li>
     {% endfor %}
 {% endblock %}
