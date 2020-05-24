@@ -63,18 +63,9 @@ def search():
     
     return render_template("bookInfo.html", user = user, books = books)
 
-@app.route("/book_selection/<string:book_isbn>/<string:username>")
-# def book(book_isbn, username = 'test1'):
-#     #get the book
-#     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
-
-#     if book is None: 
-#         return render_template("error.html", message = "book does not exist")
+@app.route("/book_selection/<string:input>/<string:username>")
+def book(input, username):
     
-#     return render_template("book.html", book = book)
-
-@app.route("/book_selection/<string:input>")
-def book(input):
     # get the book
     book_isbn = ''
     user = ''
@@ -87,12 +78,40 @@ def book(input):
         elif not firstRun:
             user = user + i
             
-
+    print ("input is: " + input)
+    print ("username is: " + username)
+    print ("user is: " + user)
     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
 
     if book is None: 
         return render_template("error.html", message = "book does not exist")
     
     return render_template("book.html", book = book, username = user)
+
+
+# @app.route("/book_selection/<string:input>/<string:username>")
+# def book(input, username):
+    
+#     # get the book
+#     book_isbn = ''
+#     user = ''
+#     firstRun = True
+#     for i in input:
+#         if i != ',' and firstRun:
+#             book_isbn = book_isbn + i
+#         elif i == ',' and firstRun:
+#             firstRun = False
+#         elif not firstRun:
+#             user = user + i
+            
+#     print ("input is: " + input)
+#     print ("username is: " + username)
+#     print ("user is: " + user)
+#     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+
+#     if book is None: 
+#         return render_template("error.html", message = "book does not exist")
+    
+#     return render_template("book.html", book = book, username = user)
 
 
