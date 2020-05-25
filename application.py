@@ -63,55 +63,23 @@ def search():
     
     return render_template("bookInfo.html", user = user, books = books)
 
-@app.route("/book_selection/<string:input>/<string:username>")
-def book(input, username):
+@app.route("/book_selection/<string:book_isbn>/<string:username>")
+def book(book_isbn, username):
     
     # get the book
-    book_isbn = ''
-    user = ''
-    firstRun = True
-    for i in input:
-        if i != ',' and firstRun:
-            book_isbn = book_isbn + i
-        elif i == ',' and firstRun:
-            firstRun = False
-        elif not firstRun:
-            user = user + i
-            
-    print ("input is: " + input)
-    print ("username is: " + username)
-    print ("user is: " + user)
+    
     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
 
     if book is None: 
         return render_template("error.html", message = "book does not exist")
     
-    return render_template("book.html", book = book, username = user)
-
-
-# @app.route("/book_selection/<string:input>/<string:username>")
-# def book(input, username):
+    #get book id
+    book_id = db.execute("SELECT id FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()[0]
     
-#     # get the book
-#     book_isbn = ''
-#     user = ''
-#     firstRun = True
-#     for i in input:
-#         if i != ',' and firstRun:
-#             book_isbn = book_isbn + i
-#         elif i == ',' and firstRun:
-#             firstRun = False
-#         elif not firstRun:
-#             user = user + i
-            
-#     print ("input is: " + input)
-#     print ("username is: " + username)
-#     print ("user is: " + user)
-#     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
-
-#     if book is None: 
-#         return render_template("error.html", message = "book does not exist")
-    
-#     return render_template("book.html", book = book, username = user)
+    print ("book id is: " + str(book_id))
+    #get the reviews
+    #reviews = db.execute("SELECT * FROM reviews WHERE book = :book_id", {"book_id": book_id})
+    reviews = db.execute("SELECT reviews.review, users.username FROM reviews INNER JOIN users ON users.id = reviews.writer WHERE book = :book_id", {"book_id": book_id})
+    return render_template("book.html", book = book, username = username, reviews = reviews)
 
 
