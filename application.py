@@ -76,10 +76,30 @@ def book(book_isbn, username):
     #get book id
     book_id = db.execute("SELECT id FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()[0]
     
-    print ("book id is: " + str(book_id))
     #get the reviews
     #reviews = db.execute("SELECT * FROM reviews WHERE book = :book_id", {"book_id": book_id})
     reviews = db.execute("SELECT reviews.review, users.username FROM reviews INNER JOIN users ON users.id = reviews.writer WHERE book = :book_id", {"book_id": book_id})
     return render_template("book.html", book = book, username = username, reviews = reviews)
+
+@app.route("/reviewing_book", methods=["post"])
+def review():
+    review = str(request.form.get("review"))
+    print ("review is: " + review)
+    username = str(request.form.get("username"))
+    print("username is: " + username)
+    userid = db.execute("SELECT id FROM users WHERE username = :username", {"username": username}).fetchone()[0]
+    
+    book_isbn = str(request.form.get("bookisbn"))
+    print("book isbn is: " + book_isbn)
+    bookid = db.execute("SELECT id FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()[0]
+    print("book id is: " + str(bookid))
+    #insert the review
+    db.execute("INSERT INTO reviews (review, book, writer) VALUES (:review, :bookid, :userid)",
+        {"review":review, "bookid":bookid, "userid":userid})
+    db.commit()
+
+    #db.execute("INSERT INTO users (username, password) VALUES (:username, :password)",
+    #                {"username":inputUser, "password": inputPassword})
+    return book(book_isbn,username)
 
 

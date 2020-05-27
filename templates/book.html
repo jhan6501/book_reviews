@@ -13,6 +13,20 @@
         <li>ISBN: {{ book.isbn}} </li>
     </ul>
 
+    <h2> Add a Review! </h2>
+    <form action="{{ url_for('review') }}" method="post">
+        <input type="hidden" name="username" value= {{ username }}>
+        <input type="hidden" name = "bookisbn" value = {{ book.isbn }}>
+        <div class="form-group">
+            <textarea name="review" placeholder="your review"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <button class="btn btn-primary">Submit review!</button>
+        </div>
+
+    </form>
+
     <h2>Reviews</h2>
     <table style="width:100%">
         <tr>
@@ -20,8 +34,10 @@
             <th>Review</th>
         </tr>
         {% for review in reviews %}
-            <td> {{review.username }} </td>
-            <td> {{review.review}} </td>
+            <tr>
+                <td> {{review.username }} </td>
+                <td> {{review.review}} </td>
+            </tr>
         {% endfor %}
     <ul>
         
