@@ -8,15 +8,15 @@
     <h1>User is: {{ username }} </h1> 
 
     <ul>
-        <li>Author: {{ book.author }}</li>
-        <li>Title: {{ book.title }}</li>
-        <li>ISBN: {{ book.isbn}} </li>
+        <li>Author: {{ book.book_author|tojson }}</li>
+        <li>Title: {{ book.book_title|tojson }}</li>
+        <li>ISBN: {{ book.book_isbn|tojson }} </li>
     </ul>
 
     <h2> Add a Review! </h2>
     <form action="{{ url_for('review') }}" method="post">
         <input type="hidden" name="username" value= {{ username }}>
-        <input type="hidden" name = "bookisbn" value = {{ book.isbn }}>
+        <input type="hidden" name = "bookisbn" value = {{ book.book_isbn|tojson }}>
         <div class="form-group">
             <textarea name="review" placeholder="your review"></textarea>
         </div>

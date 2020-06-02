@@ -1,9 +1,10 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import requests 
 
 app = Flask(__name__)
 
@@ -17,8 +18,9 @@ app = Flask(__name__)
 # Session(app)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
+engine = create_engine(os.getenv("DATABASE_URL_BOOK_REVIEWS"))
 db = scoped_session(sessionmaker(bind=engine))
+
 
 @app.route("/")
 def index():
@@ -68,13 +70,12 @@ def book(book_isbn, username):
     
     # get the book
     
-    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
-
-    if book is None: 
+    res = requests.get("http://127.0.0.1:5000/api/books/" + book_isbn)
+    if res.status_code != 200:
         return render_template("error.html", message = "book does not exist")
-    
+    book = res.json()
     #get book id
-    book_id = db.execute("SELECT id FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()[0]
+    book_id = book["book_id"]
     
     #get the reviews
     #reviews = db.execute("SELECT * FROM reviews WHERE book = :book_id", {"book_id": book_id})
@@ -91,7 +92,13 @@ def review():
     
     book_isbn = str(request.form.get("bookisbn"))
     print("book isbn is: " + book_isbn)
-    bookid = db.execute("SELECT id FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()[0]
+
+    res = requests.get("http://127.0.0.1:5000/api/books/" + book_isbn)
+    if res.status_code != 200:
+        return render_template("error.html", message = "book does not exist")
+    books = res.json()
+
+    bookid = books["book_id"]
     print("book id is: " + str(bookid))
     #insert the review
     db.execute("INSERT INTO reviews (review, book, writer) VALUES (:review, :bookid, :userid)",
@@ -101,5 +108,21 @@ def review():
     #db.execute("INSERT INTO users (username, password) VALUES (:username, :password)",
     #                {"username":inputUser, "password": inputPassword})
     return book(book_isbn,username)
+
+@app.route("/api/books/<string:book_isbn>")
+def book_api(book_isbn):
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+
+    if book is None: 
+        return jsonify({"error": "Invalid book isbn"}),422
+
+    return jsonify({
+        "book_id": book.id,
+        "book_isbn": book.isbn,
+        "book_title": book.title,
+        "book_author": book.author,
+        "book_year": book.year
+    })
+
 
 

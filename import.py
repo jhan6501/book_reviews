@@ -4,8 +4,10 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-engine = create_engine(os.getenv("DATABASE_URL"))
-#engine = create_engine("postgres://bwqjnotesaxrki:386d9a8f30a5f9786baaf0a7a2c2b5f4da90e88b2501d77ddd26110edf9440be@ec2-35-174-127-63.compute-1.amazonaws.com:5432/dd0madk3d6q450")
+engine = create_engine(os.getenv("DATABASE_URL_BOOK_REVIEWS"))
+
+#engine = create_engine("postgres://postgres:sparkyman173@127.0.0.1:5432/book_review")
+#engine = create_engine("postgres://crhbfecjtgmrgq:8161b1edd8331f4d286fa058856318c9ce67379d22ea0bd28d921b4e615163a5@ec2-18-214-211-47.compute-1.amazonaws.com:5432/d7j2ftublem89d")
 db = scoped_session(sessionmaker(bind=engine))
 
 def main():
