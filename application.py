@@ -4,9 +4,11 @@ from flask import Flask, session, render_template, request, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from api import api
 import requests 
 
 app = Flask(__name__)
+app.register_blueprint(api, url_prefix="")
 
 # # Check for environment variable
 # if not os.getenv("DATABASE_URL"):
@@ -109,20 +111,20 @@ def review():
     #                {"username":inputUser, "password": inputPassword})
     return book(book_isbn,username)
 
-@app.route("/api/books/<string:book_isbn>")
-def book_api(book_isbn):
-    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+# @app.route("/api/books/<string:book_isbn>")
+# def book_api(book_isbn):
+#     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
 
-    if book is None: 
-        return jsonify({"error": "Invalid book isbn"}),422
+#     if book is None: 
+#         return jsonify({"error": "Invalid book isbn"}),422
 
-    return jsonify({
-        "book_id": book.id,
-        "book_isbn": book.isbn,
-        "book_title": book.title,
-        "book_author": book.author,
-        "book_year": book.year
-    })
+#     return jsonify({
+#         "book_id": book.id,
+#         "book_isbn": book.isbn,
+#         "book_title": book.title,
+#         "book_author": book.author,
+#         "book_year": book.year
+#     })
 
 
 
